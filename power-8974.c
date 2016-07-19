@@ -48,7 +48,24 @@
 #include "power-common.h"
 
 static int first_display_off_hint;
-extern int display_boost;
+
+/**
+ * If target is 8974pro:
+ *     return true
+ * else:
+ *     return false
+ */
+static bool is_target_8974pro(void)
+{
+    static bool is_8974pro = false;
+    int soc_id;
+
+    soc_id = get_soc_id();
+    if (soc_id == 194 || (soc_id >= 208 && soc_id <= 218))
+        is_8974pro = true;
+
+    return is_8974pro;
+}
 
 int set_interactive_override(int on)
 {
@@ -66,7 +83,7 @@ int set_interactive_override(int on)
          * We need to be able to identify the first display off hint
          * and release the current lock holder
          */
-        if (display_boost) {
+        if (is_target_8974pro()) {
             if (!first_display_off_hint) {
                 undo_initial_hint_action();
                 first_display_off_hint = 1;
@@ -86,7 +103,7 @@ int set_interactive_override(int on)
         }
     } else {
         /* Display on */
-        if (display_boost) {
+        if (is_target_8974pro()) {
             int resource_values2[] = {CPUS_ONLINE_MIN_2};
             perform_hint_action(DISPLAY_STATE_HINT_ID_2,
                     resource_values2, ARRAY_SIZE(resource_values2));
