@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <cutils/properties.h>
 #include <libxml/parser.h>
+#include <unistd.h>
 #include "powerhintparser.h"
 
 int parsePowerhintXML() {
